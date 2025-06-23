@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>AlphaTab Music Viewer</title>
+    <script src="https://cdn.jsdelivr.net/npm/@coderline/alphatab@latest/dist/alphaTab.js"></script>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style type="text/css">
+
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+  }
+  #top-bar {
+    margin: 1rem auto;
+    text-align: center;
+  }
+  #random-btn {
+  padding: 0.35rem 0.75rem;
+  background: #4a6baf;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#random-btn:hover {
+  background: #3a5a9f;
+}
+
+#random-btn i {
+  margin-right: 5px;
+}
+
+      .at-wrap {
+        width: 80vw;
+        height: 80vh;
+        margin: 0 auto;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .at-content {
+        position: relative;
+        overflow: hidden;
+        flex: 1 1 auto;
+      }
+
+      /** Sidebar **/
+      .at-sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        max-width: 70px;
+        width: auto;
+        display: flex;
+        align-content: stretch;
+        z-index: 1001;
+        overflow: hidden;
+        border-right: 1px solid rgba(0, 0, 0, 0.12);
+        background: #f7f7f7;
+      }
+
+      .at-sidebar:hover {
+        max-width: 400px;
+        transition: max-width 0.2s;
+        overflow-y: auto;
+      }
+
+      .at-viewport {
+        overflow-y: auto;
+        position: absolute;
+        top: 0;
+        left: 70px;
+        right: 0;
+        bottom: 0;
+        padding-right: 20px;
+      }
+
+      .at-footer {
+        flex: 0 0 auto;
+        background: #436d9d;
+        color: #fff;
+      }
+
+      .at-track-volume {
+	      width: 100px;
+	      margin-top: 5px;
+      }
+      /** Overlay **/
+
+      .at-overlay {
+        /** Fill Parent */
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1002;
+
+        /* Blurry dark shade */
+        backdrop-filter: blur(3px);
+        background: rgba(0, 0, 0, 0.5);
+
+        /** center content */
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+      }
+
+      .at-overlay-content {
+        /* white box with drop-shadow */
+        margin-top: 20px;
+        background: #fff;
+        box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
+        padding: 10px;
+      }
+
+      /** Track selector **/
+      .at-track {
+        display: flex;
+        position: relative;
+        padding: 5px;
+        transition: background 0.2s;
+        cursor: pointer;
+      }
+
+      .at-track:hover {
+        background: rgba(0, 0, 0, 0.1);
+      }
+
+      .at-track > .at-track-icon,
+      .at-track > .at-track-details {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .at-track > .at-track-icon {
+        flex-shrink: 0;
+        font-size: 32px;
+        opacity: 0.5;
+        transition: opacity 0.2s;
+        width: 64px;
+        height: 64px;
+        margin-right: 5px;
+        align-items: center;
+      }
+
+      .at-track-name {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .at-track:hover > .at-track-icon {
+        opacity: 0.8;
+      }
+
+      .at-track.active {
+        background: rgba(0, 0, 0, 0.03);
+      }
+
+      .at-track.active > .at-track-icon {
+        color: #4972a1;
+        opacity: 1;
+      }
+
+      .at-track > .at-track-name {
+        font-weight: 500;
+      }
+
+      /** Footer **/
+      .at-controls {
+        flex: 0 0 auto;
+        display: flex;
+        justify-content: space-between;
+        background: #436d9d;
+        color: #fff;
+      }
+
+      .at-controls > div {
+        display: flex;
+        justify-content: flex-start;
+        align-content: center;
+        align-items: center;
+      }
+
+      .at-controls > div > * {
+        display: flex;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        padding: 4px;
+        margin: 0 3px;
+      }
+
+      .at-controls .btn {
+        color: #fff;
+        border-radius: 0;
+        height: 40px;
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+      }
+      .at-controls .btn.disabled {
+        cursor: progress;
+        opacity: 0.5;
+      }
+
+      .at-controls a.active {
+        background: #5588c7;
+        text-decoration: none;
+      }
+
+      .at-controls .btn i {
+        vertical-align: top;
+      }
+
+      .at-controls select {
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        appearance: none;
+        border: none;
+        width: 100%;
+        height: 40px;
+        background: #436d9d;
+        padding: 4px 10px;
+        color: #fff;
+        font-size: 16px;
+        text-align-last: center;
+        text-align: center;
+        -ms-text-align-last: center;
+        -moz-text-align-last: center;
+        cursor: pointer;
+      }
+
+      .at-song-title {
+        font-weight: bold;
+      }
+
+      .at-cursor-bar {
+        /* Defines the color of the bar background when a bar is played */
+        background: rgba(255, 242, 0, 0.25);
+      }
+
+      .at-selection div {
+        /* Defines the color of the selection background */
+        background: rgba(64, 64, 255, 0.1);
+      }
+
+      .at-cursor-beat {
+        /* Defines the beat cursor */
+        background: rgba(64, 64, 255, 0.75);
+        width: 3px;
+      }
+
+      .at-highlight * {
+        /* Defines the color of the music symbols when they are being played (svg) */
+        fill: #0078ff;
+        stroke: #0078ff;
+      }
+    </style>
+
+  </head>
+
+  <body>
+    <div id="top-bar">
+      <label for="song-selector">Select Song ID:</label>
+      <select id="song-selector">
+        <option value="">-- Choose an ID --</option>
+      </select>
+      <button id="random-btn" style="margin-left: 10px;">
+        <i class="fas fa-random"></i> Random
+      </button>
+    </div>
+
+    <div class="at-wrap">
+      <div class="at-content">
+        <div class="at-sidebar">
+          <div class="at-sidebar-content">
+            <div class="at-track-list"></div>
+          </div>
+        </div>
+        <div class="at-viewport">
+          <div class="at-main"></div>
+        </div>
+      </div>
+      <div class="at-controls">
+        <div class="at-controls-left">
+          <a class="btn at-player-stop disabled"><i class="fas fa-backward-step"></i></a>
+          <a class="btn at-player-play-pause disabled"><i class="fas fa-play"></i></a>
+          <span class="at-player-progress">0%</span>
+          <div class="at-song-info">
+            <span class="at-song-title"></span> -
+            <span class="at-song-artist"></span>
+          </div>
+          <div class="at-song-position">00:00 / 00:00</div>
+        </div>
+        <div class="at-controls-right">
+          <a class="btn toggle at-count-in"><i class="fas fa-hourglass-half"></i></a>
+          <a class="btn at-metronome"><i class="fas fa-pen-to-square"></i></a>
+          <a class="btn at-loop"><i class="fas fa-repeat"></i></a>
+          <a class="btn at-print"><i class="fas fa-print"></i></a>
+          <div class="at-zoom">
+            <i class="fas fa-magnifying-glass"></i>
+            <select>
+              <option value="25">25%</option>
+              <option value="50">50%</option>
+              <option value="75">75%</option>
+              <option value="90">90%</option>
+              <option value="100" selected>100%</option>
+              <option value="110">110%</option>
+              <option value="125">125%</option>
+              <option value="150">150%</option>
+              <option value="200">200%</option>
+            </select>
+          </div>
+          <div class="at-layout">
+            <select>
+              <option value="horizontal">Horizontal</option>
+              <option value="page" selected>Page</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <template id="at-track-template">
+      <div class="at-track">
+        <div class="at-track-icon"><i class="fas fa-guitar"></i></div>
+        <div class="at-track-details">
+          <div class="at-track-name"></div>
+	  <input type="range" class="at-track-volume" min="0" max="1" step="0.01" value="1"/>
+        </div>
+      </div>
+    </template>
+
+    <script>
+      const BASE_URL = "merged_gp5/";
+      const selector = document.getElementById("song-selector");
+      for (let i = 0; i <= 1400; i++) {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = `ID ${i}`;
+        selector.appendChild(opt);
+      }
+
+      const wrapper = document.querySelector(".at-wrap");
+      const main = wrapper.querySelector(".at-main");
+      const trackList = wrapper.querySelector(".at-track-list");
+      let api = null;
+
+      function setupEvents() {
+        // show title/artist
+        api.scoreLoaded.on((score) => {
+          wrapper.querySelector(".at-song-title").innerText = score.title;
+          wrapper.querySelector(".at-song-artist").innerText = score.artist;
+          trackList.innerHTML = "";
+              // Add an "All Tracks" option
+          const allTracksEl = document
+            .querySelector("#at-track-template")
+            .content.cloneNode(true).firstElementChild;
+          allTracksEl.querySelector(".at-track-name").innerText = "All Tracks";
+          allTracksEl.onclick = () => {
+            api.renderTracks(score.tracks); // Render ALL tracks
+          };
+          trackList.appendChild(allTracksEl);
+
+          score.tracks.forEach((track) => {
+            const el = document
+              .querySelector("#at-track-template")
+              .content.cloneNode(true).firstElementChild;
+            el.querySelector(".at-track-name").innerText = track.name;
+            el.track = track;
+            el.onclick = () => {
+              api.renderTracks([track]);
+            };
+	    const volumeSlider = el.querySelector(".at-track-volume");
+	    volumeSlider.oninput = () => {
+				const volume = parseFloat(volumeSlider.value);
+				api.changeTrackVolume([track], volume);
+			};
+            trackList.appendChild(el);
+          // Render ALL tracks by default when loaded
+          api.renderTracks(score.tracks);
+          });
+        });
+
+        // play/pause buttons
+        const playBtn = wrapper.querySelector(".at-player-play-pause");
+        const stopBtn = wrapper.querySelector(".at-player-stop");
+        playBtn.onclick = () => api.playPause();
+        stopBtn.onclick = () => api.stop();
+
+        api.playerReady.on(() => {
+          playBtn.classList.remove("disabled");
+          stopBtn.classList.remove("disabled");
+          wrapper.querySelector(".at-player-progress").style.display = "none";
+        });
+
+        api.playerStateChanged.on((e) => {
+          const icon = playBtn.querySelector("i");
+          icon.classList.toggle("fa-play", e.state !== alphaTab.synth.PlayerState.Playing);
+          icon.classList.toggle("fa-pause", e.state === alphaTab.synth.PlayerState.Playing);
+        });
+
+        api.playerPositionChanged.on((e) => {
+          const pos = wrapper.querySelector(".at-song-position");
+          const minSec = ms => {
+            const s = Math.floor(ms / 1000);
+            const min = String(Math.floor(s / 60)).padStart(2, "0");
+            const sec = String(s % 60).padStart(2, "0");
+            return `${min}:${sec}`;
+          };
+          pos.innerText = `${minSec(e.currentTime)} / ${minSec(e.endTime)}`;
+        });
+
+        // other toggles
+        wrapper.querySelector(".at-count-in").onclick = (e) => {
+          e.currentTarget.classList.toggle("active");
+          api.countInVolume = e.currentTarget.classList.contains("active") ? 1 : 0;
+        };
+
+        wrapper.querySelector(".at-metronome").onclick = (e) => {
+          e.currentTarget.classList.toggle("active");
+          api.metronomeVolume = e.currentTarget.classList.contains("active") ? 1 : 0;
+        };
+
+        wrapper.querySelector(".at-loop").onclick = (e) => {
+          e.currentTarget.classList.toggle("active");
+          api.isLooping = e.currentTarget.classList.contains("active");
+        };
+
+        wrapper.querySelector(".at-print").onclick = () => api.print();
+
+        const zoomSelect = wrapper.querySelector(".at-zoom select");
+        zoomSelect.onchange = () => {
+          api.settings.display.scale = parseInt(zoomSelect.value) / 100;
+          api.updateSettings();
+          api.render();
+        };
+
+        const layoutSelect = wrapper.querySelector(".at-layout select");
+        layoutSelect.onchange = () => {
+          api.settings.display.layoutMode = layoutSelect.value === "horizontal"
+            ? alphaTab.LayoutMode.Horizontal
+            : alphaTab.LayoutMode.Page;
+          api.updateSettings();
+          api.render();
+        };
+      }
+
+      function loadFiles(id) {
+        const bass = `${BASE_URL}/merged_${id}.gp5`;
+
+        if (!api) {
+          api = new alphaTab.AlphaTabApi(main, {
+            file: bass,
+            player: {
+              enablePlayer: true,
+              soundFont: "https://cdn.jsdelivr.net/npm/@coderline/alphatab@latest/dist/soundfont/sonivox.sf2",
+              scrollElement: wrapper.querySelector(".at-viewport"),
+	      trackVolume: true
+            },
+          });
+          setupEvents();
+        } else {
+          api.load(bass);
+        }
+      }
+
+      selector.addEventListener("change", () => {
+        const id = selector.value;
+        if (id) {
+          loadFiles(id);
+        }
+      });
+      // Add random song selection
+      document.getElementById('random-btn').addEventListener('click', () => {
+        const currentId = selector.value;
+        let randomId;
+
+        // Ensure the new random ID is different from the current one
+        do {
+          randomId = Math.floor(Math.random() * 1400); // 0-2300
+        } while (randomId.toString() === currentId && currentId !== "");
+
+        selector.value = randomId;
+        selector.dispatchEvent(new Event('change')); // Trigger the load
+      });
+
+function updateUrlWithId(id) {
+  const url = new URL(window.location);
+  url.searchParams.set('id', id);
+  window.history.pushState({}, '', url);
+}
+
+function getIdFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  return id && !isNaN(id) ? parseInt(id) : null;
+}
+
+// When a new file is selected
+selector.addEventListener("change", async () => {
+  const selectedId = parseInt(selector.value);
+  if (!isNaN(selectedId)) {
+    updateUrlWithId(selectedId);   
+    await loadFiles(selectedId);  
+  }
+});
+
+// On page load
+window.addEventListener("DOMContentLoaded", () => {
+  const idFromUrl = getIdFromUrl();
+  if (idFromUrl !== null && idFromUrl >= 0 && idFromUrl <= 2300) {
+    selector.value = idFromUrl.toString();
+    loadFiles(idFromUrl);
+  } else {
+    loadFiles(0); // fallback or default
+  }
+});
+	
+    </script>
+  </body>
+</html>
