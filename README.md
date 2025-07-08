@@ -19,6 +19,12 @@ Please note that this code is shared under a GPL3 License. Refer to the `LICENSE
 Also be aware that this code is heavily based on the following repository: [https://github.com/melkor169/CP_Drums_Generation](https://github.com/melkor169/CP_Drums_Generation).
 We advise also citing the paper corresponding to the original repository if the code is used in research work.
 
+## Demo Website
+
+If you want to access the demonstration website of the generated files, go to:
+
+[https://adhooge.github.io/BassTablatureGeneration/](https://adhooge.github.io/BassTablatureGeneration/)
+
 ## Configuration
 
 You can use the provided `environment.yml` file to set up a Conda environment:
