@@ -43,6 +43,9 @@ The train/validation/test pickle files are available in the `data.zip` archive.
 You will have to **unzip** it before using the code.
 Were the pickle files to grow out of date, or a need for the full data without splits, feel free to contact us at the email address shared on the paper.
 
+The data was extracted from the original DadaGP dataset that is restricted to research purposes (unlicensed).
+The data files of this repository are shared under an ODbL license. Refer to the `DATA_LICENSE` file for details.
+
 ## Training
 
 You can reproduce the model's training after unzipping data with the `src/model_train.py` script. 
